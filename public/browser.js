@@ -9,7 +9,7 @@ function itemTemplate(item) {
 }
 //Initial Page Load Render
 let ourHTML = items
-  .map(function(item) {
+  .map(function (item) {
     return itemTemplate(item);
   })
   .join("");
@@ -18,13 +18,13 @@ document.getElementById("item-list").insertAdjacentHTML("beforeend", ourHTML);
 //Create Feature
 
 let createField = document.getElementById("create-field");
-document.getElementById("create-form").addEventListener("submit", function(e) {
+document.getElementById("create-form").addEventListener("submit", function (e) {
   e.preventDefault();
   axios
     .post("/create-item", {
-      text: createField.value
+      text: createField.value,
     })
-    .then(function(response) {
+    .then(function (response) {
       //create the HTML FOR NEW ITEM
       document
         .getElementById("item-list")
@@ -32,23 +32,23 @@ document.getElementById("create-form").addEventListener("submit", function(e) {
       createField.value = "";
       createField.focus();
     })
-    .catch(function() {
+    .catch(function () {
       console.log("Please Try again later");
     });
 });
 
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
   //Delete Feature
   if (e.target.classList.contains("delete-me")) {
     if (confirm("Do you really want to delete this item permanently")) {
       axios
         .post("/delete-item", {
-          id: e.target.getAttribute("data-id")
+          id: e.target.getAttribute("data-id"),
         })
-        .then(function() {
+        .then(function () {
           e.target.parentElement.parentElement.remove();
         })
-        .catch(function() {
+        .catch(function () {
           console.log("Please Try again later");
         });
     }
@@ -63,14 +63,14 @@ document.addEventListener("click", function(e) {
       axios
         .post("/update-item", {
           text: userInput,
-          id: e.target.getAttribute("data-id")
+          id: e.target.getAttribute("data-id"),
         })
-        .then(function() {
+        .then(function () {
           e.target.parentElement.parentElement.querySelector(
             ".item-text"
           ).innerHTML = userInput;
         })
-        .catch(function() {
+        .catch(function () {
           console.log("Please Try again later");
         });
     }

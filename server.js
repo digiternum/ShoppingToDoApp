@@ -1,9 +1,20 @@
+//
 let express = require("express");
+
 let mongodb = require("mongodb");
+/*
+
+*/
 let sanitizeHTML = require("sanitize-html");
 let app = express();
 
 let db;
+/*
+When hosting your application on another service 
+(like Heroku, Nodejitsu, and AWS), your host may 
+independently configure the process.env.PORT variable
+ for you; after all, your script runs in their environment.
+*/
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
@@ -16,12 +27,18 @@ let connectionString =
 mongodb.connect(
   connectionString,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  function(err, client) {
+  function (err, client) {
     db = client.db();
     app.listen(port);
   }
 );
+
 app.use(express.json());
+/*
+Add all the form object to the Body Object
+this configures the express framework to add the body
+object to the request object
+*/
 app.use(express.urlencoded({ extended: false }));
 
 function passwordProtected(req, res, next) {
@@ -36,10 +53,10 @@ function passwordProtected(req, res, next) {
 
 app.use(passwordProtected);
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   db.collection("items")
     .find()
-    .toArray(function(err, items) {
+    .toArray(function (err, items) {
       res.send(`<!DOCTYPE html>
         <html>
         <head>
@@ -79,34 +96,35 @@ app.get("/", function(req, res) {
         </html>`);
     });
 });
-app.post("/create-item", function(req, res) {
+
+app.post("/create-item", function (req, res) {
   let safeText = sanitizeHTML(req.body.text, {
     allowedTags: [],
-    allowedAttributes: {}
+    allowedAttributes: {},
   });
-  db.collection("items").insertOne({ text: safeText }, function(err, info) {
+  db.collection("items").insertOne({ text: safeText }, function (err, info) {
     res.json(info.ops[0]);
   });
 });
 
-app.post("/update-item", function(req, res) {
+app.post("/update-item", function (req, res) {
   let safeText = sanitizeHTML(req.body.text, {
     allowedTags: [],
-    allowedAttributes: {}
+    allowedAttributes: {},
   });
   db.collection("items").findOneAndUpdate(
     { _id: new mongodb.ObjectId(req.body.id) },
     { $set: { text: safeText } },
-    function() {
+    function () {
       res.send("Success");
     }
   );
 });
 
-app.post("/delete-item", function(req, res) {
+app.post("/delete-item", function (req, res) {
   db.collection("items").deleteOne(
     { _id: new mongodb.ObjectId(req.body.id) },
-    function() {
+    function () {
       res.send("Success");
     }
   );
