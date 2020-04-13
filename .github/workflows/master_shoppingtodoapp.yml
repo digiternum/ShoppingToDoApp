@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'shoppingtodoapp'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1fe60b4f6ce54cafb89666e8607942fa }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_e91b1f2480ca4f3d9f8749339b6c9378 }}
         package: .
